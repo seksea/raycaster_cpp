@@ -15,8 +15,8 @@ void render()
     glClear(GL_COLOR_BUFFER_BIT);
     glColor3f(1.0, 0.0, 0.0);
     glPointSize(2.0);
-    Textures::hotbar->drawImage();
-    Textures::dev->drawImage();
+    Textures::hotbar->drawImage(0, 0);
+    Textures::dev->drawImage(0, 120);
     glFlush();
 }
 

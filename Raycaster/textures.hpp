@@ -18,9 +18,9 @@ namespace Textures {
 			}
 		}
 
-		const void drawImage()
+		const void drawImage(float x, float y)
 		{
-			glRasterPos2i(0, 0);
+			glRasterPos2i(x, y);
 			glDrawPixels(m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, &m_image[0]);
 			glFlush();
 		}
@@ -34,8 +34,8 @@ namespace Textures {
 
 	inline void initTextures()
 	{
-		dev = std::make_shared<BaseTexture>("dev.png");
-		hotbar = std::make_shared<BaseTexture>("hotbar.png");
+		dev = std::make_shared<BaseTexture>("resources/dev.png");
+		hotbar = std::make_shared<BaseTexture>("resources/hotbar.png");
 
 	}
 }
