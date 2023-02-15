@@ -13,6 +13,28 @@ class Vec2
 public:
 	Vec2(const float x = 0, const float y = 0)
 		: m_x(x), m_y(y) {}
+
+	Vec2 operator+(Vec2 rhs)
+	{
+		return Vec2(m_x + rhs.m_x, m_y + rhs.m_y);
+	}
+
+	Vec2 operator-(Vec2 rhs)
+	{
+		return Vec2(m_x - rhs.m_x, m_y - rhs.m_y);
+	}
+
+	Vec2 operator*(float rhs)
+	{
+		return Vec2(m_x * rhs, m_y * rhs);
+	}
+
+	Vec2 operator/(float rhs)
+	{
+		return Vec2(m_x / rhs, m_y / rhs);
+	}
+
+
 	float m_x, m_y;
 };
 
@@ -64,7 +86,7 @@ namespace Map {
 				m_position.getConjoinedSide(position), m_position.m_min.m_x, m_position.m_min.m_y, m_position.m_max.m_x, m_position.m_max.m_y,
 				position.m_min.m_x, position.m_min.m_y, position.m_max.m_x, position.m_max.m_y);
 
-			newSpace->m_conjoinedSpaces.push_back(newSpace);
+			m_conjoinedSpaces.push_back(newSpace);
 			return newSpace;
 		}
 
@@ -79,7 +101,7 @@ namespace Map {
 		// [1] = Right
 		// [2] = Bottom
 		// [3] = Left
-		std::vector<std::shared_ptr<EmptySpace>> m_conjoinedSpaces;
+		std::vector<std::shared_ptr<EmptySpace>> m_conjoinedSpaces = {};
 	};
 
 	inline std::shared_ptr<EmptySpace> map = {};
@@ -87,7 +109,7 @@ namespace Map {
 	{
 		// TODO: make a map editor
 		map = std::make_shared<EmptySpace>(Rect(-32, -32, 32, 32), Textures::dev);
-		auto doorframe = map->createConjoinedSpace(Rect(-4, 32, 4, 34), Textures::dev);
-		doorframe->createConjoinedSpace(Rect(-32, 34, 64, 64), Textures::dev);
+		map->createConjoinedSpace(Rect(-4, 32, 4, 34), Textures::dev)
+			->createConjoinedSpace(Rect(-32, 34, 64, 64), Textures::dev);
 	}
 }

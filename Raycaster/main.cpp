@@ -31,6 +31,12 @@ void render()
     glFlush();
 }
 
+void timer(int val)
+{
+    glutTimerFunc(16, timer, 0);
+    glutPostRedisplay();
+}
+
 int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
@@ -38,6 +44,7 @@ int main(int argc, char** argv)
     glutInitWindowPosition(10, 10);
     glutCreateWindow("raycaster");
     init();
+    glutTimerFunc(0, timer, 0);
     glutDisplayFunc(render);
     glutMainLoop();
     return 0;
