@@ -137,11 +137,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="include\lodepng.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\lodepng.hpp" />
+    <ClInclude Include="gamestate.hpp" />
+    <ClInclude Include="include\stbi.hpp" />
+    <ClInclude Include="mapview.hpp" />
+    <ClInclude Include="player.hpp" />
     <ClInclude Include="textures.hpp" />
     <ClInclude Include="map.hpp" />
   </ItemGroup>

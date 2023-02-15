@@ -18,18 +18,24 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="include\lodepng.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="map.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\lodepng.hpp">
+    <ClInclude Include="include\stbi.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="textures.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="player.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gamestate.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mapview.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

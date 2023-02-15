@@ -2,7 +2,8 @@
 #include <memory>
 #include <GL/glut.h>
 
-#include "include/lodepng.hpp"
+#define STB_IMAGE_IMPLEMENTATION
+#include "include/stbi.hpp"
 
 namespace Textures {
 	class BaseTexture
@@ -10,23 +11,23 @@ namespace Textures {
 	public:
 		BaseTexture(const char* filename)
 		{
-			std::vector<unsigned char> buffer;
-			unsigned int error = lodepng::decode(m_image, m_width, m_height, filename);
-			if (error)
+			m_data = stbi_load(filename, &m_width, &m_height, &m_channels, 0);
+			if (m_data == nullptr)
 			{
-				printf("texture %s couldn't be loaded, this is because:\n%s\n", filename, lodepng_error_text(error));
+				printf("texture %s couldn't be loaded!", filename);
 			}
+			printf("texture %s loaded (%ix%i, %ichan) ", filename, m_width, m_height, m_channels);
 		}
 
-		const void drawImage(float x, float y)
+		const void drawImage(int x, int y)
 		{
 			glRasterPos2i(x, y);
-			glDrawPixels(m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, &m_image[0]);
+			glDrawPixels(m_width, m_height, m_channels == 4 ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, m_data);
 			glFlush();
 		}
 
-		unsigned int m_width, m_height;
-		std::vector<unsigned char> m_image;
+		int m_width, m_height, m_channels;
+		stbi_uc* m_data;
 	};
 
 	inline std::shared_ptr<BaseTexture> dev;
@@ -34,8 +35,8 @@ namespace Textures {
 
 	inline void initTextures()
 	{
+		stbi_set_flip_vertically_on_load(true);
 		dev = std::make_shared<BaseTexture>("resources/dev.png");
 		hotbar = std::make_shared<BaseTexture>("resources/hotbar.png");
-
 	}
 }
