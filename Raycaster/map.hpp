@@ -87,6 +87,7 @@ namespace Map {
 				position.m_min.m_x, position.m_min.m_y, position.m_max.m_x, position.m_max.m_y);
 
 			m_conjoinedSpaces.push_back(newSpace);
+			newSpace->parent = shared_from_this();
 			return newSpace;
 		}
 
@@ -101,6 +102,7 @@ namespace Map {
 		// [1] = Right
 		// [2] = Bottom
 		// [3] = Left
+		std::shared_ptr<EmptySpace> parent = {};
 		std::vector<std::shared_ptr<EmptySpace>> m_conjoinedSpaces = {};
 	};
 
