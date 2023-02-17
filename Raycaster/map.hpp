@@ -1,6 +1,5 @@
 #pragma once
 #include <memory>
-#include <utility>
 #include <vector>
 
 #include "textures.hpp"
@@ -32,6 +31,33 @@ public:
 	Vec2 operator/(float rhs)
 	{
 		return Vec2(m_x / rhs, m_y / rhs);
+	}
+
+	float dot(const Vec2& other) const
+	{
+		return m_x * other.m_x + m_y * other.m_y;
+	}
+
+	float determinate(const Vec2& other) const
+	{
+		return m_x * other.m_y - m_y * other.m_x;
+	}
+
+	float length() const
+	{
+		return sqrtf(m_x * m_x + m_y * m_y);
+	}
+
+	Vec2 normalized() const
+	{
+		float len = length();
+		if (len == 0) return Vec2(0, 0);
+		return Vec2(m_x / len, m_y / len);
+	}
+
+	Vec2 normal() const
+	{
+		return Vec2(-m_y, m_x);
 	}
 
 

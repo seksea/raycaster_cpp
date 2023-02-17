@@ -17,7 +17,11 @@ namespace MapView
 	// recursively render walls
 	void renderWalls(const std::shared_ptr<Map::EmptySpace>& root, Vec2 offset, float zoom)
 	{
-		glColor3f(1.f, 0.f, 0.f);
+		if (root.get() == localPlayer.m_curSpace.get())
+			glColor3f(1.f, 0.f, 1.f);
+		else
+			glColor3f(1.f, 0.f, 0.f);
+
 		drawRect(offset + (root->m_position.m_min * zoom), offset + (root->m_position.m_max * zoom));
 
 		if (root)
@@ -49,6 +53,16 @@ namespace MapView
 		renderWalls(root, Vec2(320, 100), 2.f);
 		glColor3f(0, 1.f, 0.f);
 		renderPlayer(localPlayer, Vec2(320, 100), 2.f);
+
+
+		Renderer::Ray ray(localPlayer.m_pos, localPlayer.m_lookDir, localPlayer.m_curSpace);
+		const Vec2 result = ray.trace();
+		
+		glPointSize(4);
+		glBegin(GL_POINTS);
+		glVertex2f(320 + (result.m_x * 2.f), 100 + (result.m_y * 2.f));
+		//printf("%.2f %.2f\n", offset.m_x + (p.m_x * zoom), offset.m_y + (p.m_y * zoom));
+		glEnd();
 	}
 
 }

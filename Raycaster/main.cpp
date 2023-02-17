@@ -11,8 +11,10 @@ void init(void)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluOrtho2D(0.0, 640.0, 480.0, 0.0);
+
     Textures::initTextures();
     Map::init();
+    localPlayer.m_curSpace = Map::map;
 }
 
 void render()
