@@ -2,6 +2,8 @@
 #include "map.hpp"
 #include "player.hpp"
 
+#include <cmath>
+
 void drawRect(Vec2 min, Vec2 max)
 {
 	glBegin(GL_LINE_LOOP);
@@ -55,14 +57,20 @@ namespace MapView
 		renderPlayer(localPlayer, Vec2(320, 100), 2.f);
 
 
-		Renderer::Ray ray(localPlayer.m_pos, localPlayer.m_lookDir, localPlayer.m_curSpace);
-		const Vec2 result = ray.trace();
-		
-		glPointSize(4);
-		glBegin(GL_POINTS);
-		glVertex2f(320 + (result.m_x * 2.f), 100 + (result.m_y * 2.f));
-		//printf("%.2f %.2f\n", offset.m_x + (p.m_x * zoom), offset.m_y + (p.m_y * zoom));
-		glEnd();
+
+		for (float i = localPlayer.m_lookDir.angle() - 0.8f; i < localPlayer.m_lookDir.angle()+0.8f; i+= 0.02)
+		{
+			Vec2 ang = Vec2(1, 0).rotate(i);
+			Renderer::Ray ray(localPlayer.m_pos, ang, localPlayer.m_curSpace);
+			const Vec2 result = ray.trace();
+
+			glPointSize(2);
+			glBegin(GL_LINES);
+			glVertex2f(320  + (localPlayer.m_pos.m_x * 2), 100 + (localPlayer.m_pos.m_y * 2));
+			glVertex2f(320 + (result.m_x * 2.f), 100 + (result.m_y * 2.f));
+			//printf("%.2f %.2f\n", offset.m_x + (p.m_x * zoom), offset.m_y + (p.m_y * zoom));
+			glEnd();
+		}
 	}
 
 }

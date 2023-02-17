@@ -13,49 +13,60 @@ public:
 	Vec2(const float x = 0, const float y = 0)
 		: m_x(x), m_y(y) {}
 
-	Vec2 operator+(Vec2 rhs)
+	Vec2 operator+(Vec2 rhs) const
 	{
 		return Vec2(m_x + rhs.m_x, m_y + rhs.m_y);
 	}
 
-	Vec2 operator-(Vec2 rhs)
+	Vec2 operator-(Vec2 rhs) const
 	{
 		return Vec2(m_x - rhs.m_x, m_y - rhs.m_y);
 	}
 
-	Vec2 operator*(float rhs)
+	Vec2 operator*(float rhs) const
 	{
 		return Vec2(m_x * rhs, m_y * rhs);
 	}
 
-	Vec2 operator/(float rhs)
+	Vec2 operator/(float rhs) const
 	{
 		return Vec2(m_x / rhs, m_y / rhs);
 	}
 
-	float dot(const Vec2& other) const
+	[[nodiscard]] float dot(const Vec2& other) const
 	{
 		return m_x * other.m_x + m_y * other.m_y;
 	}
 
-	float determinate(const Vec2& other) const
+	[[nodiscard]] float determinate(const Vec2& other) const
 	{
 		return m_x * other.m_y - m_y * other.m_x;
 	}
 
-	float length() const
+	[[nodiscard]] float length() const
 	{
 		return sqrtf(m_x * m_x + m_y * m_y);
 	}
 
-	Vec2 normalized() const
+	Vec2 rotate(float rad)
 	{
-		float len = length();
+		const Vec2 oldDir = Vec2(m_x, m_y);
+		return { oldDir.m_x * cosf(rad) - oldDir.m_y * sinf(rad), oldDir.m_x * sinf(rad) + oldDir.m_y * cosf(rad) };
+	}
+
+	float angle()
+	{
+		return atan2f(m_y, m_x);
+	}
+
+	[[nodiscard]] Vec2 normalized() const
+	{
+		const float len = length();
 		if (len == 0) return Vec2(0, 0);
 		return Vec2(m_x / len, m_y / len);
 	}
 
-	Vec2 normal() const
+	[[nodiscard]] Vec2 normal() const
 	{
 		return Vec2(-m_y, m_x);
 	}
@@ -74,7 +85,7 @@ public:
 	}
 
 	// returns the side that the rect is conjoined to the other rect (-1 = no conjoined side)
-	int getConjoinedSide(const Rect& other) const
+	[[nodiscard]] int getConjoinedSide(const Rect& other) const
 	{
 		if (m_min.m_y == other.m_max.m_y)
 			return 0; // top
@@ -117,6 +128,22 @@ namespace Map {
 			return newSpace;
 		}
 
+		std::shared_ptr<EmptySpace> getConjoinedSpaceAtPoint(const Vec2& pos)
+		{
+			if (parent && pos.m_x >= parent->m_position.m_min.m_x && pos.m_x <= parent->m_position.m_max.m_x &&
+				pos.m_y >= parent->m_position.m_min.m_y && pos.m_y <= parent->m_position.m_max.m_y)
+				return parent;
+
+			for (auto& space : m_conjoinedSpaces)
+			{
+				if (pos.m_x >= space->m_position.m_min.m_x && pos.m_x <= space->m_position.m_max.m_x &&
+					pos.m_y >= space->m_position.m_min.m_y && pos.m_y <= space->m_position.m_max.m_y)
+					return space;
+			}
+
+			return nullptr;
+		}
+
 		Rect m_position = { 0, 0, 0, 0 };
 
 		// [0] = Top
@@ -137,7 +164,10 @@ namespace Map {
 	{
 		// TODO: make a map editor
 		map = std::make_shared<EmptySpace>(Rect(-32, -32, 32, 32), Textures::dev);
+		map->createConjoinedSpace(Rect(-64, 0, -32, 32), Textures::dev);
 		map->createConjoinedSpace(Rect(-4, 32, 4, 34), Textures::dev)
 			->createConjoinedSpace(Rect(-32, 34, 64, 64), Textures::dev);
+			//->createConjoinedSpace(Rect(50, 32, 58, 34), Textures::dev) non euclidian test
+			//->createConjoinedSpace(Rect(-10, -10, 64, 32), Textures::dev);
 	}
 }
