@@ -43,51 +43,65 @@ namespace Renderer
 			return Vec2(xnom / denom, ynom / denom); //All OK
 		}
 
-		Vec2 findRayIntersectionWithRectangle(const Rect& rect)
+		struct RayIntersectResult
+		{
+			Vec2 pos = Vec2(0, 0);
+			int side = 0;// top = 0, right = 1, bottom = 2, left = 3
+		};
+		RayIntersectResult findRayIntersectionWithRectangle(const Rect& rect)
 		{
 			if (m_direction.m_y < 0)
 			{
 				const Vec2 topIntersection = findRayIntersection(rect.m_min, Vec2(rect.m_max.m_x, rect.m_min.m_y));
 				if (topIntersection.m_x < rect.m_max.m_x && topIntersection.m_x > rect.m_min.m_x)
-					return topIntersection;
+					return { topIntersection, 0 };
 			}
 
 			if (m_direction.m_x > 0)
 			{
 				const Vec2 rightIntersection = findRayIntersection(Vec2(rect.m_max.m_x, rect.m_min.m_y), rect.m_max);
 				if (rightIntersection.m_y < rect.m_max.m_y && rightIntersection.m_y > rect.m_min.m_y)
-					return rightIntersection;
+					return {rightIntersection, 1 };
 			}
 
 			if (m_direction.m_y > 0)
 			{
 				const Vec2 bottomIntersection = findRayIntersection(rect.m_max, Vec2(rect.m_min.m_x, rect.m_max.m_y));
 				if (bottomIntersection.m_x < rect.m_max.m_x && bottomIntersection.m_x > rect.m_min.m_x)
-					return bottomIntersection;
+					return {bottomIntersection, 2 };
 			}
 
 			if (m_direction.m_x < 0)
 			{
 				const Vec2 leftIntersection = findRayIntersection(Vec2(rect.m_min.m_x, rect.m_max.m_y), rect.m_min);
 				if (leftIntersection.m_y < rect.m_max.m_y && leftIntersection.m_y > rect.m_min.m_y)
-					return leftIntersection;
+					return {leftIntersection, 3 };
 			}
 
-			return Vec2(0, 0);
+			return { Vec2(0, 0), 0 };
 		}
 
-		Vec2 trace()
+		struct TraceResult
+		{
+			Vec2 hitPos = Vec2(0, 0);
+			std::shared_ptr<Textures::BaseTexture> texture = {};
+			int side = 0; // top = 0, right = 1, bottom = 2, left = 3
+		};
+
+		TraceResult trace()
 		{
 			std::shared_ptr<Map::EmptySpace> curSpace = m_startingSpace;
-			Vec2 intersectionPos;
+			RayIntersectResult intersectionPos;
+			std::shared_ptr<Map::EmptySpace> hitSpace = {};
 			while (curSpace)
 			{
 				intersectionPos = findRayIntersectionWithRectangle(curSpace->m_position);
 
-				curSpace = curSpace->getConjoinedSpaceAtPoint(intersectionPos + m_direction);
+				hitSpace = curSpace;
+				curSpace = curSpace->getConjoinedSpaceAtPoint(intersectionPos.pos + m_direction / 50);
 			}
 
-			return intersectionPos;
+			return { intersectionPos.pos, hitSpace->m_wallTexture[intersectionPos.side], intersectionPos.side};
 		}
 
 		std::shared_ptr<Map::EmptySpace> m_startingSpace;

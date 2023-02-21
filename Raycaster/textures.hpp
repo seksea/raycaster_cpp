@@ -10,7 +10,9 @@ namespace Textures {
 	public:
 		BaseTexture(const char* filename);
 
-		const void drawImage(int x, int y);
+		void drawImage(int x, int y) const;
+
+		void drawColumn(int x, int y, int column, int thickness, int height) const;
 
 		int m_width, m_height, m_channels;
 		stbi_uc* m_data;

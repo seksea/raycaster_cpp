@@ -71,6 +71,13 @@ public:
 		return Vec2(-m_y, m_x);
 	}
 
+	[[nodiscard]] float distTo(Vec2 other) const
+	{
+		float a = m_x - other.m_x;
+		float b = m_y - other.m_y;
+		return sqrt(powf(a, 2) + powf(b, 2));
+	}
+
 
 	float m_x, m_y;
 };
@@ -134,6 +141,10 @@ namespace Map {
 				pos.m_y >= parent->m_position.m_min.m_y && pos.m_y <= parent->m_position.m_max.m_y)
 				return parent;
 
+			if (pos.m_x >= m_position.m_min.m_x && pos.m_x <= m_position.m_max.m_x &&
+				pos.m_y >= m_position.m_min.m_y && pos.m_y <= m_position.m_max.m_y)
+				return shared_from_this();
+
 			for (auto& space : m_conjoinedSpaces)
 			{
 				if (pos.m_x >= space->m_position.m_min.m_x && pos.m_x <= space->m_position.m_max.m_x &&
@@ -166,8 +177,8 @@ namespace Map {
 		map = std::make_shared<EmptySpace>(Rect(-32, -32, 32, 32), Textures::dev);
 		map->createConjoinedSpace(Rect(-64, 0, -32, 32), Textures::dev);
 		map->createConjoinedSpace(Rect(-4, 32, 4, 34), Textures::dev)
-			->createConjoinedSpace(Rect(-32, 34, 64, 64), Textures::dev);
-			//->createConjoinedSpace(Rect(50, 32, 58, 34), Textures::dev) non euclidian test
-			//->createConjoinedSpace(Rect(-10, -10, 64, 32), Textures::dev);
+			->createConjoinedSpace(Rect(-4, 34, 14, 46), Textures::dev)
+			->createConjoinedSpace(Rect(6, 32, 14, 34), Textures::dev) // non euclidian test
+			->createConjoinedSpace(Rect(-10, -10, 64, 32), Textures::dev);
 	}
 }

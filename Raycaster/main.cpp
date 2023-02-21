@@ -1,4 +1,5 @@
 #include <GL/glut.h>
+#include <filesystem>
 
 #include "textures.hpp"
 #include "map.hpp"
@@ -23,13 +24,31 @@ void render()
 
 	if (!MapView::mapViewOpen)
     {
+        // Draw sky and floor
+        glColor3f(0.4f, 0.f, 0.6f);
+		glBegin(GL_QUADS);
+		glVertex2i(0, 0);
+		glVertex2i(640, 0);
+		glVertex2i(640, 150);
+		glVertex2i(0, 150);
+		glEnd();
+
+        glColor3f(0, 0.4f, 0);
+		glBegin(GL_QUADS);
+		glVertex2i(0, 150);
+		glVertex2i(640, 150);
+		glVertex2i(640, 480);
+		glVertex2i(0, 480);
+		glEnd();
+
+        glColor3f(1.f, 1.f, 1.f);
+
+		localPlayer.renderView();
         Textures::hotbar->drawImage(0, 480);
-        localPlayer.renderView();
     }
     else
     {
         MapView::render(Map::map);
-        localPlayer.renderView();
     }
     glFlush();
 }
@@ -40,8 +59,8 @@ void keydown(unsigned char key, int x, int y) {
     if (key == 115) keysPressed.s = true;
     if (key == 100) keysPressed.d = true;
 
-    if (key == 27) // esc
-        exit(0);
+    if (key == 27) // esc = open map view
+        MapView::mapViewOpen = !MapView::mapViewOpen;
 
     printf("%i\n", key);
 }
@@ -62,6 +81,7 @@ void timer(int val)
 
 int main(int argc, char** argv)
 {
+    printf("%s\n\n\n", std::filesystem::current_path().string().c_str());
     glutInit(&argc, argv);
     glutInitWindowSize(640, 480);
     glutInitWindowPosition(10, 10);
