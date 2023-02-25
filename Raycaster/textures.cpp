@@ -10,9 +10,9 @@ namespace Textures
 		m_data = stbi_load(filename, &m_width, &m_height, &m_channels, 0);
 		if (m_data == nullptr)
 		{
-			printf("texture %s couldn't be loaded!", filename);
+			printf("texture %s couldn't be loaded!\n", filename);
 		}
-		printf("texture %s loaded (%ix%i, %ichan) ", filename, m_width, m_height, m_channels);
+		printf("texture %s loaded (%ix%i, %ichan)\n", filename, m_width, m_height, m_channels);
 	}
 
 	void BaseTexture::drawImage(int x, int y) const
@@ -46,6 +46,9 @@ namespace Textures
 
 	void initTextures()
 	{
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
+
 		stbi_set_flip_vertically_on_load(false);
 		dev = std::make_shared<BaseTexture>("resources/dev.png");
 		brick = std::make_shared<BaseTexture>("resources/brick.png");

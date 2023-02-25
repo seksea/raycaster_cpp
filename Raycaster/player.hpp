@@ -18,7 +18,7 @@ public:
 	void renderView()
 	{
 		const float moveSpeed = 0.5f; // TODO: respect deltatime
-		const float rotationSpeed = 0.02f; // TODO: respect deltatime
+		const float rotationSpeed = 0.04f; // TODO: respect deltatime
 		const Vec2 oldPos = m_pos;
 		if (keysPressed.w) m_pos = m_pos + m_lookDir * moveSpeed;
 		if (keysPressed.s) m_pos = m_pos + m_lookDir * -moveSpeed;
@@ -33,7 +33,7 @@ public:
 		
 		constexpr float width = 640;
 		constexpr float columnWidth = 4;
-		constexpr float FOVRad = 0.4f;
+		constexpr float FOVRad = 1.2f;
 		
 		//for (float i = m_lookDir.angle() - 0.8f; i < m_lookDir.angle() + 0.8f; i += 0.02f)
 		for (float i = 0; i < width; i += columnWidth)

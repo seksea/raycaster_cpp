@@ -1,10 +1,12 @@
 #include <GL/glut.h>
 #include <filesystem>
+#include <chrono>
 
 #include "textures.hpp"
 #include "map.hpp"
 #include "mapview.hpp"
 #include "player.hpp"
+#include "textrenderer.hpp"
 
 void init(void)
 {
@@ -14,8 +16,21 @@ void init(void)
     gluOrtho2D(0.0, 640.0, 480.0, 0.0);
 
     Textures::initTextures();
+    TextRenderer::init();
     Map::init();
     localPlayer.m_curSpace = Map::map;
+}
+
+void fpsCounter()
+{
+    static auto lastTime = std::chrono::high_resolution_clock::now();
+    auto curTime = std::chrono::high_resolution_clock::now();
+
+    auto timeBetweenFrames = std::chrono::duration_cast<std::chrono::nanoseconds>(curTime - lastTime).count();
+    if (timeBetweenFrames == 0) timeBetweenFrames = 1;
+
+    TextRenderer::drawNumber(1000000000 / timeBetweenFrames, Vec2(5, 24));
+    lastTime = curTime;
 }
 
 void render()
@@ -25,7 +40,7 @@ void render()
 	if (!MapView::mapViewOpen)
     {
         // Draw sky and floor
-        int offset = (int)(localPlayer.m_lookDir.angle() * 1700);
+        int offset = (int)(localPlayer.m_lookDir.angle() * 520);
         for (int i = 0; i < 640; i += 4)
         {
             Textures::sky->drawColumn(i, 0, abs(offset + i) % 500, 4, 150, 1.f);
@@ -43,12 +58,17 @@ void render()
 
 		localPlayer.renderView();
         Textures::pistol->drawImage(295, 360);
+
+        // hotbar and hotbar text
         Textures::hotbar->drawImage(0, 480);
+        TextRenderer::drawNumber(100, Vec2(40, 397));
+        TextRenderer::drawNumber(22, Vec2(40, 423));
     }
     else
     {
         MapView::render(Map::map);
     }
+    fpsCounter();
     glFlush();
 }
 

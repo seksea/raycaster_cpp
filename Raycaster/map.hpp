@@ -176,9 +176,9 @@ namespace Map {
 		// TODO: make a map editor
 		map = std::make_shared<EmptySpace>(Rect(-32, -32, 32, 32), Textures::brick);
 		map->createConjoinedSpace(Rect(-64, 0, -32, 32), Textures::brick);
-		auto room2 = map->createConjoinedSpace(Rect(-4, 32, 4, 33), Textures::planks)
+		auto room2 = map->createConjoinedSpace(Rect(-4, 32, 5, 33), Textures::planks)
 			->createConjoinedSpace(Rect(-4, 33, 14, 52), Textures::cobble)
-			->createConjoinedSpace(Rect(6, 32, 14, 33), Textures::planks) // non-euclidian test
+			->createConjoinedSpace(Rect(5.5, 32, 14, 33), Textures::planks) // non-euclidian test
 			->createConjoinedSpace(Rect(-10, -10, 64, 32), Textures::brick);
 		room2->createConjoinedSpace(Rect(64, 0, 128, 100), Textures::brick);
 

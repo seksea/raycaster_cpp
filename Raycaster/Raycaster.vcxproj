@@ -73,10 +73,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\</OutDir>
     <TargetName>$(ProjectName)-$(Configuration)</TargetName>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);include/freetype/include</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);include/freetype/lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\</OutDir>
     <TargetName>$(ProjectName)-$(Configuration)</TargetName>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);include/freetype/include</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);include/freetype/lib</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -139,6 +143,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mapview.cpp" />
+    <ClCompile Include="textrenderer.cpp" />
     <ClCompile Include="textures.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +152,7 @@
     <ClInclude Include="mapview.hpp" />
     <ClInclude Include="player.hpp" />
     <ClInclude Include="renderer.hpp" />
+    <ClInclude Include="textrenderer.hpp" />
     <ClInclude Include="textures.hpp" />
     <ClInclude Include="map.hpp" />
   </ItemGroup>
