@@ -52,9 +52,9 @@ namespace MapView
 
 	void render(const std::shared_ptr<Map::EmptySpace>& root)
 	{
-		renderWalls(root, Vec2(320, 100), 2.f);
+		renderWalls(root, Vec2(320, 300), 2.f);
 		glColor3f(0, 1.f, 0.f);
-		renderPlayer(localPlayer, Vec2(320, 100), 2.f);
+		renderPlayer(localPlayer, Vec2(320, 300), 2.f);
 	}
 
 }

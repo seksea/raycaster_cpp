@@ -25,13 +25,11 @@ void render()
 	if (!MapView::mapViewOpen)
     {
         // Draw sky and floor
-        glColor3f(0.4f, 0.f, 0.6f);
-		glBegin(GL_QUADS);
-		glVertex2i(0, 0);
-		glVertex2i(640, 0);
-		glVertex2i(640, 150);
-		glVertex2i(0, 150);
-		glEnd();
+        int offset = (int)(localPlayer.m_lookDir.angle() * 1700);
+        for (int i = 0; i < 640; i += 4)
+        {
+            Textures::sky->drawColumn(i, 0, abs(offset + i) % 500, 4, 150, 1.f);
+        }
 
         glColor3f(0, 0.4f, 0);
 		glBegin(GL_QUADS);
@@ -44,6 +42,7 @@ void render()
         glColor3f(1.f, 1.f, 1.f);
 
 		localPlayer.renderView();
+        Textures::pistol->drawImage(295, 360);
         Textures::hotbar->drawImage(0, 480);
     }
     else

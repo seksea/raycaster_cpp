@@ -43,7 +43,7 @@ public:
 			const Renderer::Ray::TraceResult result = ray.trace();
 			float distance = result.hitPos.distTo(m_pos);
 
-			result.texture->drawColumn(i, 150 - (1 / distance) * 3000, abs(((int)(result.hitPos.m_x * 4) + (int)(result.hitPos.m_y * 4))) % 64, columnWidth, (1 / distance) * 6000);
+			result.texture->drawColumn(i, 150 - (1 / distance) * 3000, abs(((int)(result.hitPos.m_x * 4) + (int)(result.hitPos.m_y * 4))) % 64, columnWidth, (1 / distance) * 6000, result.side == 0 || result.side == 1 ? 0.75f : 1.f);
 		}
 	}
 

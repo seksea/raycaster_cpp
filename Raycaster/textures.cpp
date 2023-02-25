@@ -21,7 +21,7 @@ namespace Textures
 		glDrawPixels(m_width, m_height, m_channels == 4 ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, m_data);
 	}
 
-	void BaseTexture::drawColumn(int x, int y, int column, int thickness, int height) const
+	void BaseTexture::drawColumn(int x, int y, int column, int thickness, int height, float brightness) const
 	{
 		//printf("thickness %i\nheight %i\nratio %f\n\n\n", thickness, height, ((float)m_height / ((float)height / (float)thickness)));
 		float ratio = ((float)m_height / ((float)height / (float)thickness));
@@ -30,8 +30,10 @@ namespace Textures
 		{
 			int index = ((int)((float)row * ratio) * m_width + column) * m_channels;
 
+			if (y + row * thickness < 0 || y + row * thickness > 400)
+				continue; // DIY fix for drawing points out of bounds and eating memory
 			
-			glColor3ub(m_data[index], m_data[index + 1], m_data[index + 2]);
+			glColor3ub(m_data[index] * brightness, m_data[index + 1] * brightness, m_data[index + 2] * brightness);
 
 			glBegin(GL_POINTS);
 
@@ -46,8 +48,14 @@ namespace Textures
 	{
 		stbi_set_flip_vertically_on_load(false);
 		dev = std::make_shared<BaseTexture>("resources/dev.png");
+		brick = std::make_shared<BaseTexture>("resources/brick.png");
+		planks = std::make_shared<BaseTexture>("resources/planks.png");
+		cobble = std::make_shared<BaseTexture>("resources/cobble.png");
+
+		sky = std::make_shared<BaseTexture>("resources/sky.png");
 
 		stbi_set_flip_vertically_on_load(true);
 		hotbar = std::make_shared<BaseTexture>("resources/hotbar.png");
+		pistol = std::make_shared<BaseTexture>("resources/pistol.png");
 	}
 }

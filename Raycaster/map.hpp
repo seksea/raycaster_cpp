@@ -174,11 +174,21 @@ namespace Map {
 	inline void init()
 	{
 		// TODO: make a map editor
-		map = std::make_shared<EmptySpace>(Rect(-32, -32, 32, 32), Textures::dev);
-		map->createConjoinedSpace(Rect(-64, 0, -32, 32), Textures::dev);
-		map->createConjoinedSpace(Rect(-4, 32, 4, 34), Textures::dev)
-			->createConjoinedSpace(Rect(-4, 34, 14, 46), Textures::dev)
-			->createConjoinedSpace(Rect(6, 32, 14, 34), Textures::dev) // non euclidian test
-			->createConjoinedSpace(Rect(-10, -10, 64, 32), Textures::dev);
+		map = std::make_shared<EmptySpace>(Rect(-32, -32, 32, 32), Textures::brick);
+		map->createConjoinedSpace(Rect(-64, 0, -32, 32), Textures::brick);
+		auto room2 = map->createConjoinedSpace(Rect(-4, 32, 4, 33), Textures::planks)
+			->createConjoinedSpace(Rect(-4, 33, 14, 52), Textures::cobble)
+			->createConjoinedSpace(Rect(6, 32, 14, 33), Textures::planks) // non-euclidian test
+			->createConjoinedSpace(Rect(-10, -10, 64, 32), Textures::brick);
+		room2->createConjoinedSpace(Rect(64, 0, 128, 100), Textures::brick);
+
+		auto hallway = room2->createConjoinedSpace(Rect(-11, -10, -10, 0), Textures::planks)
+			->createConjoinedSpace(Rect(-19, -128, -11, 64), Textures::brick);
+
+		hallway->createConjoinedSpace(Rect(-20, -40, -19, -32), Textures::planks)
+			->createConjoinedSpace(Rect(-100, -60, -20, -20), Textures::cobble);
+
+		hallway->createConjoinedSpace(Rect(-11, 32, -10, 40), Textures::planks)
+			->createConjoinedSpace(Rect(-10, 20, 60, 200), Textures::cobble);
 	}
 }
