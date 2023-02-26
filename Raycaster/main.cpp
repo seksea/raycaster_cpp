@@ -63,6 +63,9 @@ void render()
         Textures::hotbar->drawImage(0, 480);
         TextRenderer::drawNumber(100, Vec2(40, 397));
         TextRenderer::drawNumber(22, Vec2(40, 423));
+
+        //TextRenderer::drawNumber(abs(localPlayer.m_pos.m_x), Vec2(5, 50));
+        //TextRenderer::drawNumber(abs(localPlayer.m_pos.m_y), Vec2(50, 50));
     }
     else
     {
@@ -80,8 +83,9 @@ void keydown(unsigned char key, int x, int y) {
 
     if (key == 27) // esc = open map view
         MapView::mapViewOpen = !MapView::mapViewOpen;
-
+#ifdef _DEBUG
     printf("%i\n", key);
+#endif
 }
 
 void keyup(unsigned char key, int x, int y)

@@ -126,7 +126,7 @@ namespace Map {
 		{
 			std::shared_ptr<EmptySpace> newSpace = std::make_shared<EmptySpace>(position, wallTexture);
 
-			printf("Faces are conjoined %i.\n parent rect = min(%f %f), max(%f %f)\n child rect = min(%f %f), max(%f %f)\n",  // NOLINT(clang-diagnostic-format-insufficient-args)
+			printf("Faces are conjoined %i.\n parent rect = min(%f %f), max(%f %f)\n child rect = min(%f %f), max(%f %f)\n",
 				m_position.getConjoinedSide(position), m_position.m_min.m_x, m_position.m_min.m_y, m_position.m_max.m_x, m_position.m_max.m_y,
 				position.m_min.m_x, position.m_min.m_y, position.m_max.m_x, position.m_max.m_y);
 

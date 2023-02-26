@@ -32,7 +32,7 @@ public:
 			m_pos = oldPos;
 		
 		constexpr float width = 640;
-		constexpr float columnWidth = 4;
+		constexpr float columnWidth = 3;
 		constexpr float FOVRad = 1.2f;
 		
 		//for (float i = m_lookDir.angle() - 0.8f; i < m_lookDir.angle() + 0.8f; i += 0.02f)
@@ -50,5 +50,8 @@ public:
 	Vec2 m_lookDir = Vec2(1, 0);
 	Vec2 m_pos = Vec2(0, 0);
 	std::shared_ptr<Map::EmptySpace> m_curSpace = {};
+
+	int m_health = 100;
+	int m_ammo = 60;
 
 } inline localPlayer(Vec2(0, 0));
