@@ -7,6 +7,8 @@
 #include "mapview.hpp"
 #include "player.hpp"
 #include "textrenderer.hpp"
+#include "gamestate.hpp"
+#include "sprites.hpp"
 
 void init(void)
 {
@@ -26,10 +28,9 @@ void fpsCounter()
     static auto lastTime = std::chrono::high_resolution_clock::now();
     auto curTime = std::chrono::high_resolution_clock::now();
 
-    auto timeBetweenFrames = std::chrono::duration_cast<std::chrono::nanoseconds>(curTime - lastTime).count();
-    if (timeBetweenFrames == 0) timeBetweenFrames = 1;
+    GameState::deltaTime = ((float)std::chrono::duration_cast<std::chrono::nanoseconds>(curTime - lastTime).count()) / 1000000;
 
-    TextRenderer::drawNumber(1000000000 / timeBetweenFrames, Vec2(5, 24));
+    TextRenderer::drawNumber(1000 / GameState::deltaTime, Vec2(5, 24));
     lastTime = curTime;
 }
 
@@ -57,6 +58,7 @@ void render()
         glColor3f(1.f, 1.f, 1.f);
 
 		localPlayer.renderView();
+        Sprites::renderSprites();
         Textures::pistol->drawImage(295, 360);
 
         // hotbar and hotbar text
@@ -76,24 +78,53 @@ void render()
 }
 
 void keydown(unsigned char key, int x, int y) {
-    if (key == 119) keysPressed.w = true;
-    if (key == 97) keysPressed.a = true;
-    if (key == 115) keysPressed.s = true;
-    if (key == 100) keysPressed.d = true;
+    if (glutGetModifiers() == GLUT_ACTIVE_SHIFT)
+    {
+        keysPressed.shift = true;
+        if (key + 32 == 'w') keysPressed.w = true;
+        if (key + 32 == 'a') keysPressed.a = true;
+        if (key + 32 == 's') keysPressed.s = true;
+        if (key + 32 == 'd') keysPressed.d = true;
 
-    if (key == 27) // esc = open map view
-        MapView::mapViewOpen = !MapView::mapViewOpen;
+        printf("down %i %i\n", glutGetModifiers(), key+32);
+    }
+    else {
+        keysPressed.shift = false;
+        if (key == 'w') keysPressed.w = true;
+        if (key == 'a') keysPressed.a = true;
+        if (key == 's') keysPressed.s = true;
+        if (key == 'd') keysPressed.d = true;
+
+        if (key == 27) // esc = open map view
+            MapView::mapViewOpen = !MapView::mapViewOpen;
+
+        printf("down %i %i\n", glutGetModifiers(), key);
+    }
 #ifdef _DEBUG
-    printf("%i\n", key);
 #endif
 }
 
 void keyup(unsigned char key, int x, int y)
 {
-    if (key == 119) keysPressed.w = false;
-    if (key == 97) keysPressed.a = false;
-    if (key == 115) keysPressed.s = false;
-    if (key == 100) keysPressed.d = false;
+    if (glutGetModifiers() == 3)
+    {
+        keysPressed.shift = true;
+        if (key + 32 == 'w') keysPressed.w = false;
+        if (key + 32 == 'a') keysPressed.a = false;
+        if (key + 32 == 's') keysPressed.s = false;
+        if (key + 32 == 'd') keysPressed.d = false;
+
+        printf("up %i %i\n", glutGetModifiers(), key + 32);
+    }
+    else {
+        keysPressed.shift = false;
+        if (key == 'w') keysPressed.w = false;
+        if (key == 'a') keysPressed.a = false;
+        if (key == 's') keysPressed.s = false;
+        if (key == 'd') keysPressed.d = false;
+
+        printf("up %i %i\n", glutGetModifiers(), key);
+    }
 }
 
 void timer(int val)
@@ -104,7 +135,6 @@ void timer(int val)
 
 int main(int argc, char** argv)
 {
-    printf("%s\n\n\n", std::filesystem::current_path().string().c_str());
     glutInit(&argc, argv);
     glutInitWindowSize(640, 480);
     glutInitWindowPosition(10, 10);

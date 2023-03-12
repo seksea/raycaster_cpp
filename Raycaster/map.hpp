@@ -188,6 +188,12 @@ namespace Map {
 		hallway->createConjoinedSpace(Rect(-20, -40, -19, -32), Textures::planks)
 			->createConjoinedSpace(Rect(-100, -60, -20, -20), Textures::cobble);
 
+		auto magicHallway = hallway->createConjoinedSpace(Rect(-11, -42, -10, -34), Textures::planks)
+			->createConjoinedSpace(Rect(-10, -42, 10, -34), Textures::cobble)
+			->createConjoinedSpace(Rect(2, -34, 10, -32), Textures::planks);
+		map->m_conjoinedSpaces.push_back(magicHallway);
+		magicHallway->m_conjoinedSpaces.push_back(map);
+
 		hallway->createConjoinedSpace(Rect(-11, 32, -10, 40), Textures::planks)
 			->createConjoinedSpace(Rect(-10, 20, 60, 200), Textures::cobble);
 	}

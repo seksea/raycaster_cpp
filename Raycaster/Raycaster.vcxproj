@@ -152,6 +152,7 @@
     <ClInclude Include="mapview.hpp" />
     <ClInclude Include="player.hpp" />
     <ClInclude Include="renderer.hpp" />
+    <ClInclude Include="sprites.hpp" />
     <ClInclude Include="textrenderer.hpp" />
     <ClInclude Include="textures.hpp" />
     <ClInclude Include="map.hpp" />

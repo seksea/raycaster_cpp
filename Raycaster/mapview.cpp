@@ -2,7 +2,7 @@
 #include "map.hpp"
 #include "player.hpp"
 
-#include <cmath>
+#include <set>
 
 void drawRect(Vec2 min, Vec2 max)
 {
@@ -16,6 +16,8 @@ void drawRect(Vec2 min, Vec2 max)
 
 namespace MapView
 {
+
+	std::set<std::shared_ptr<Map::EmptySpace>> alreadyRendered;
 	// recursively render walls
 	void renderWalls(const std::shared_ptr<Map::EmptySpace>& root, Vec2 offset, float zoom)
 	{
@@ -26,11 +28,14 @@ namespace MapView
 
 		drawRect(offset + (root->m_position.m_min * zoom), offset + (root->m_position.m_max * zoom));
 
+		alreadyRendered.insert(root);
+
 		if (root)
 		{
 			for (const auto& child : root->m_conjoinedSpaces)
 			{
-				renderWalls(child, offset, zoom);
+				if (!alreadyRendered.contains(child))
+					renderWalls(child, offset, zoom);
 			}
 		}
 	}
@@ -53,6 +58,7 @@ namespace MapView
 	void render(const std::shared_ptr<Map::EmptySpace>& root)
 	{
 		renderWalls(root, Vec2(320, 300), 2.f);
+		alreadyRendered.clear();
 		glColor3f(0, 1.f, 0.f);
 		renderPlayer(localPlayer, Vec2(320, 300), 2.f);
 	}

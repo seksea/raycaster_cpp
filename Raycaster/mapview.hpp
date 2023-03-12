@@ -8,6 +8,6 @@ namespace Map {
 
 namespace MapView
 {
-	inline bool mapViewOpen = true;
+	inline bool mapViewOpen = false;
 	void render(const std::shared_ptr<Map::EmptySpace>& root);
 }
