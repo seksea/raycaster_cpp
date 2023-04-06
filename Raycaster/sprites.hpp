@@ -28,9 +28,9 @@ namespace Sprites
 
 			Vec2 deltaPlayer = m_pos - localPlayer.m_pos;
 
-			float angleToPlayer = deltaPlayer.angle();
+			const float angleToPlayer = deltaPlayer.angle();
 
-			const float angPerPixel = 640/0.8f;
+			constexpr float angPerPixel = 640/0.8f;
 
 			const float angleFromLeftOfScreen = localPlayer.m_lookDir.angle() + (0.4f) - angleToPlayer;
 			
@@ -38,14 +38,7 @@ namespace Sprites
 
 			screenPos.m_x = 640 - (angleFromLeftOfScreen * angPerPixel);
 			screenPos.m_y = 150;
-
-			int spriteSize = (1.f / m_pos.distTo(localPlayer.m_pos)) * 6000.f;
-
-			//Textures::barrel->drawScaledImage(screenPos.m_x - (spriteSize / 2), screenPos.m_y - (spriteSize/2), 4, spriteSize);
-
-			// if sprite is in front of wall
-			//auto depthForAngle = depthBuffer.lower_bound(angleFromLeftOfScreen);
-			// if ()
+			
 			glColor3f(m_r, m_g, m_b);
 			glPointSize(5);
 			glBegin(GL_POINTS);
@@ -70,9 +63,9 @@ namespace Sprites
 
 			Vec2 deltaPlayer = m_pos - localPlayer.m_pos;
 
-			float angleToPlayer = deltaPlayer.angle();
+			const float angleToPlayer = deltaPlayer.angle();
 
-			const float angPerPixel = 640 / 0.8f;
+			constexpr float angPerPixel = 640 / 0.8f;
 
 			const float angleFromLeftOfScreen = localPlayer.m_lookDir.angle() + (0.4f) - angleToPlayer;
 
@@ -84,7 +77,7 @@ namespace Sprites
 			int spriteSize = (1.f / m_pos.distTo(localPlayer.m_pos)) * 6000.f;
 
 			if (m_texture)
-			m_texture->drawScaledImage(screenPos.m_x - (spriteSize / 2), screenPos.m_y - (spriteSize/2), 4, spriteSize);
+				m_texture->drawScaledImage(screenPos.m_x - (spriteSize / 2), screenPos.m_y - (spriteSize/2), 4, spriteSize);
 		}
 
 		std::shared_ptr<Textures::BaseTexture> m_texture = {};
