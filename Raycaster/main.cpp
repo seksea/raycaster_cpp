@@ -20,7 +20,8 @@ void init(void)
     Textures::initTextures();
     TextRenderer::init();
     Map::init();
-    localPlayer.m_curSpace = Map::map;
+    Sprites::addSprites();
+    localPlayer.m_curRoom = Map::map;
 }
 
 void fpsCounter()
@@ -40,13 +41,15 @@ void render()
 
 	if (!MapView::mapViewOpen)
     {
-        // Draw sky and floor
-        int offset = (int)(localPlayer.m_lookDir.angle() * 520);
+        //Textures::dev->drawImage(100, 100);
+        // Draw sky
+        int offset = (int)(localPlayer.m_lookDir.angle() * 520 /* Constant picked after trial and error */);
         for (int i = 0; i < 640; i += 4)
         {
             Textures::sky->drawColumn(i, 0, abs(offset + i) % 500, 4, 150, 1.f);
         }
 
+        // Draw green floor
         glColor3f(0, 0.4f, 0);
 		glBegin(GL_QUADS);
 		glVertex2i(0, 150);
@@ -61,17 +64,23 @@ void render()
         Sprites::renderSprites();
         Textures::pistol->drawImage(295, 360);
 
-        // hotbar and hotbar text
+        // hotbar
         Textures::hotbar->drawImage(0, 480);
-        TextRenderer::drawNumber(100, Vec2(40, 397));
-        TextRenderer::drawNumber(22, Vec2(40, 423));
+        //TextRenderer::drawNumber(100, Vec2(40, 397));
+        //TextRenderer::drawNumber(22, Vec2(40, 423));
 
         //TextRenderer::drawNumber(abs(localPlayer.m_pos.m_x), Vec2(5, 50));
         //TextRenderer::drawNumber(abs(localPlayer.m_pos.m_y), Vec2(50, 50));
+
+
+        //static float count = 0;
+        //count += 0.02f;
+        //Textures::dev->drawScaledImage(10, 10, 1, abs(sinf(count)) * 150);
     }
     else
     {
         MapView::render(Map::map);
+        localPlayer.renderView();
     }
     fpsCounter();
     glFlush();
@@ -100,8 +109,6 @@ void keydown(unsigned char key, int x, int y) {
 
         printf("down %i %i\n", glutGetModifiers(), key);
     }
-#ifdef _DEBUG
-#endif
 }
 
 void keyup(unsigned char key, int x, int y)

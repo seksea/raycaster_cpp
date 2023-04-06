@@ -14,6 +14,8 @@ namespace Textures {
 
 		void drawColumn(int x, int y, int column, int thickness, int height, float brightness = 1.f) const;
 
+		void drawScaledImage(int x, int y, int pixelWidth, int size) const;
+
 		int m_width, m_height, m_channels;
 		stbi_uc* m_data;
 	};
@@ -22,6 +24,10 @@ namespace Textures {
 	inline std::shared_ptr<BaseTexture> brick;
 	inline std::shared_ptr<BaseTexture> cobble;
 	inline std::shared_ptr<BaseTexture> planks;
+
+	inline std::shared_ptr<BaseTexture> zombie;
+
+	inline std::shared_ptr<BaseTexture> barrel;
 
 	inline std::shared_ptr<BaseTexture> sky;
 

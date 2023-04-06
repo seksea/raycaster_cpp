@@ -10,7 +10,7 @@
 class Vec2
 {
 public:
-	Vec2(const float x = 0, const float y = 0)
+	constexpr Vec2(const float x = 0, const float y = 0)
 		: m_x(x), m_y(y) {}
 
 	Vec2 operator+(Vec2 rhs) const
@@ -109,11 +109,11 @@ public:
 };
 
 namespace Map {
-	// World is laid out using conjoined areas of hollow space
-	class EmptySpace : public std::enable_shared_from_this<EmptySpace>
+	// World is laid out using conjoined areas of hollow space (rooms)
+	class Room : public std::enable_shared_from_this<Room>
 	{
 	public:
-		EmptySpace(const Rect& position, const std::shared_ptr<Textures::BaseTexture> wallTexture)
+		Room(const Rect& position, const std::shared_ptr<Textures::BaseTexture> wallTexture)
 		{
 			m_position = Rect(position.m_min.m_x, position.m_min.m_y, position.m_max.m_x, position.m_max.m_y);
 			m_wallTexture[0] = wallTexture;
@@ -122,20 +122,20 @@ namespace Map {
 			m_wallTexture[3] = wallTexture;
 		}
 
-		std::shared_ptr<EmptySpace> createConjoinedSpace(Rect position, const std::shared_ptr<Textures::BaseTexture> wallTexture)
+		std::shared_ptr<Room> createConjoinedRoom(Rect position, const std::shared_ptr<Textures::BaseTexture> wallTexture)
 		{
-			std::shared_ptr<EmptySpace> newSpace = std::make_shared<EmptySpace>(position, wallTexture);
+			std::shared_ptr<Room> newRoom = std::make_shared<Room>(position, wallTexture);
 
 			printf("Faces are conjoined %i.\n parent rect = min(%f %f), max(%f %f)\n child rect = min(%f %f), max(%f %f)\n",
 				m_position.getConjoinedSide(position), m_position.m_min.m_x, m_position.m_min.m_y, m_position.m_max.m_x, m_position.m_max.m_y,
 				position.m_min.m_x, position.m_min.m_y, position.m_max.m_x, position.m_max.m_y);
 
-			m_conjoinedSpaces.push_back(newSpace);
-			newSpace->parent = shared_from_this();
-			return newSpace;
+			m_conjoinedRooms.push_back(newRoom);
+			newRoom->parent = shared_from_this();
+			return newRoom;
 		}
 
-		std::shared_ptr<EmptySpace> getConjoinedSpaceAtPoint(const Vec2& pos)
+		std::shared_ptr<Room> getConjoinedRoomAtPoint(const Vec2& pos)
 		{
 			if (parent && pos.m_x >= parent->m_position.m_min.m_x && pos.m_x <= parent->m_position.m_max.m_x &&
 				pos.m_y >= parent->m_position.m_min.m_y && pos.m_y <= parent->m_position.m_max.m_y)
@@ -145,7 +145,7 @@ namespace Map {
 				pos.m_y >= m_position.m_min.m_y && pos.m_y <= m_position.m_max.m_y)
 				return shared_from_this();
 
-			for (auto& space : m_conjoinedSpaces)
+			for (auto& space : m_conjoinedRooms)
 			{
 				if (pos.m_x >= space->m_position.m_min.m_x && pos.m_x <= space->m_position.m_max.m_x &&
 					pos.m_y >= space->m_position.m_min.m_y && pos.m_y <= space->m_position.m_max.m_y)
@@ -162,39 +162,35 @@ namespace Map {
 		// [2] = Bottom
 		// [3] = Left
 		std::shared_ptr<Textures::BaseTexture> m_wallTexture[4];
-		// [0] = Top
-		// [1] = Right
-		// [2] = Bottom
-		// [3] = Left
-		std::shared_ptr<EmptySpace> parent = {};
-		std::vector<std::shared_ptr<EmptySpace>> m_conjoinedSpaces = {};
+		std::shared_ptr<Room> parent = {};
+		std::vector<std::shared_ptr<Room>> m_conjoinedRooms = {};
 	};
 
-	inline std::shared_ptr<EmptySpace> map = {};
+	inline std::shared_ptr<Room> map = {};
 	inline void init()
 	{
 		// TODO: make a map editor
-		map = std::make_shared<EmptySpace>(Rect(-32, -32, 32, 32), Textures::brick);
-		map->createConjoinedSpace(Rect(-64, 0, -32, 32), Textures::brick);
-		auto room2 = map->createConjoinedSpace(Rect(-4, 32, 5, 33), Textures::planks)
-			->createConjoinedSpace(Rect(-4, 33, 14, 52), Textures::cobble)
-			->createConjoinedSpace(Rect(5.5, 32, 14, 33), Textures::planks) // non-euclidian test
-			->createConjoinedSpace(Rect(-10, -10, 64, 32), Textures::brick);
-		room2->createConjoinedSpace(Rect(64, 0, 128, 100), Textures::brick);
+		map = std::make_shared<Room>(Rect(-32, -32, 32, 32), Textures::brick);
+		map->createConjoinedRoom(Rect(-64, 0, -32, 32), Textures::brick);
+		auto room2 = map->createConjoinedRoom(Rect(-4, 32, 5, 33), Textures::planks)
+			->createConjoinedRoom(Rect(-4, 33, 14, 52), Textures::cobble)
+			->createConjoinedRoom(Rect(5.5, 32, 14, 33), Textures::planks) // non-euclidian test
+			->createConjoinedRoom(Rect(-10, -10, 64, 32), Textures::brick);
+		room2->createConjoinedRoom(Rect(64, 0, 128, 100), Textures::brick);
 
-		auto hallway = room2->createConjoinedSpace(Rect(-11, -10, -10, 0), Textures::planks)
-			->createConjoinedSpace(Rect(-19, -128, -11, 64), Textures::brick);
+		auto hallway = room2->createConjoinedRoom(Rect(-11, -10, -10, 0), Textures::planks)
+			->createConjoinedRoom(Rect(-19, -128, -11, 64), Textures::brick);
 
-		hallway->createConjoinedSpace(Rect(-20, -40, -19, -32), Textures::planks)
-			->createConjoinedSpace(Rect(-100, -60, -20, -20), Textures::cobble);
+		hallway->createConjoinedRoom(Rect(-20, -40, -19, -32), Textures::planks)
+			->createConjoinedRoom(Rect(-100, -60, -20, -20), Textures::cobble);
 
-		auto magicHallway = hallway->createConjoinedSpace(Rect(-11, -42, -10, -34), Textures::planks)
-			->createConjoinedSpace(Rect(-10, -42, 10, -34), Textures::cobble)
-			->createConjoinedSpace(Rect(2, -34, 10, -32), Textures::planks);
-		map->m_conjoinedSpaces.push_back(magicHallway);
-		magicHallway->m_conjoinedSpaces.push_back(map);
+		auto magicHallway = hallway->createConjoinedRoom(Rect(-11, -42, -10, -34), Textures::planks)
+			->createConjoinedRoom(Rect(-10, -42, 10, -34), Textures::cobble)
+			->createConjoinedRoom(Rect(2, -34, 10, -32), Textures::planks);
+		map->m_conjoinedRooms.push_back(magicHallway);
+		magicHallway->m_conjoinedRooms.push_back(map);
 
-		hallway->createConjoinedSpace(Rect(-11, 32, -10, 40), Textures::planks)
-			->createConjoinedSpace(Rect(-10, 20, 60, 200), Textures::cobble);
+		hallway->createConjoinedRoom(Rect(-11, 32, -10, 40), Textures::planks)
+			->createConjoinedRoom(Rect(-10, 20, 60, 200), Textures::cobble);
 	}
 }

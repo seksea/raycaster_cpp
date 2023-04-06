@@ -3,11 +3,11 @@
 
 
 namespace Map {
-	class EmptySpace;
+	class Room;
 }
 
 namespace MapView
 {
 	inline bool mapViewOpen = false;
-	void render(const std::shared_ptr<Map::EmptySpace>& root);
+	void render(const std::shared_ptr<Map::Room>& root);
 }

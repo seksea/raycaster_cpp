@@ -17,11 +17,11 @@ void drawRect(Vec2 min, Vec2 max)
 namespace MapView
 {
 
-	std::set<std::shared_ptr<Map::EmptySpace>> alreadyRendered;
+	std::set<std::shared_ptr<Map::Room>> alreadyRendered;
 	// recursively render walls
-	void renderWalls(const std::shared_ptr<Map::EmptySpace>& root, Vec2 offset, float zoom)
+	void renderWalls(const std::shared_ptr<Map::Room>& root, Vec2 offset, float zoom)
 	{
-		if (root.get() == localPlayer.m_curSpace.get())
+		if (root.get() == localPlayer.m_curRoom.get())
 			glColor3f(1.f, 0.f, 1.f);
 		else
 			glColor3f(1.f, 0.f, 0.f);
@@ -32,7 +32,7 @@ namespace MapView
 
 		if (root)
 		{
-			for (const auto& child : root->m_conjoinedSpaces)
+			for (const auto& child : root->m_conjoinedRooms)
 			{
 				if (!alreadyRendered.contains(child))
 					renderWalls(child, offset, zoom);
@@ -55,9 +55,9 @@ namespace MapView
 		glEnd();
 	}
 
-	void render(const std::shared_ptr<Map::EmptySpace>& root)
+	void render(const std::shared_ptr<Map::Room>& root)
 	{
-		renderWalls(root, Vec2(320, 300), 2.f);
+		renderWalls(Map::map, Vec2(320, 300), 2.f);
 		alreadyRendered.clear();
 		glColor3f(0, 1.f, 0.f);
 		renderPlayer(localPlayer, Vec2(320, 300), 2.f);

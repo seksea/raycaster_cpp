@@ -11,7 +11,7 @@ namespace Renderer
 	class Ray
 	{
 	public:
-		Ray(const Vec2& startPos, const Vec2& direction, const std::shared_ptr<Map::EmptySpace>& startingSpace)
+		Ray(const Vec2& startPos, const Vec2& direction, const std::shared_ptr<Map::Room>& startingSpace)
 		{
 			m_startPos = startPos;
 			m_direction = direction;
@@ -20,7 +20,6 @@ namespace Renderer
 
 		Vec2 findRayIntersection(Vec2 p1, Vec2 p2)
 		{
-			// TODO: rewrite bc plagiarism :rofl:
 			//http://mathworld.wolfram.com/Line-LineIntersection.html
 
 			Vec2 endPos = m_startPos + m_direction * RAY_LENGTH;
@@ -86,25 +85,33 @@ namespace Renderer
 			Vec2 hitPos = Vec2(0, 0);
 			std::shared_ptr<Textures::BaseTexture> texture = {};
 			int side = 0; // top = 0, right = 1, bottom = 2, left = 3
+			std::vector<std::shared_ptr<Map::Room>> roomsPassedThrough = {};
 		};
 
 		TraceResult trace()
 		{
-			std::shared_ptr<Map::EmptySpace> curSpace = m_startingSpace;
+			std::shared_ptr<Map::Room> curSpace = m_startingSpace;
 			RayIntersectResult intersectionPos;
-			std::shared_ptr<Map::EmptySpace> hitSpace = {};
+			std::shared_ptr<Map::Room> hitSpace = {};
+
+			TraceResult result = {};
 			while (curSpace)
 			{
 				intersectionPos = findRayIntersectionWithRectangle(curSpace->m_position);
 
 				hitSpace = curSpace;
-				curSpace = curSpace->getConjoinedSpaceAtPoint(intersectionPos.pos + m_direction / 50);
+				curSpace = curSpace->getConjoinedRoomAtPoint(intersectionPos.pos + m_direction / 50);
+
+				result.roomsPassedThrough.push_back(curSpace);
 			}
 
-			return { intersectionPos.pos, hitSpace->m_wallTexture[intersectionPos.side], intersectionPos.side};
+			result.hitPos = intersectionPos.pos;
+			result.texture = hitSpace->m_wallTexture[intersectionPos.side];
+			result.side = intersectionPos.side;
+			return result;
 		}
 
-		std::shared_ptr<Map::EmptySpace> m_startingSpace;
+		std::shared_ptr<Map::Room> m_startingSpace;
 		Vec2 m_startPos;
 		Vec2 m_direction;
 	};

@@ -1,6 +1,9 @@
 #pragma once
 #include "map.hpp"
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 namespace Sprites
 {
 	struct BaseSprite
@@ -18,37 +21,84 @@ namespace Sprites
 		{
 			m_pos = pos;
 		}
+
 		void render() override
-		{
-			static float viewDist = 320 / tanf(0.8f/2);
+		{	//		 vv good explanation on getting sprite world to screen coordinates vv
+			// https://wynnliam.github.io/raycaster/news/tutorial/2019/04/03/raycaster-part-02.html
 
-			// get position relative to player
-			Vec2 relativePos = m_pos - localPlayer.m_pos;
+			Vec2 deltaPlayer = m_pos - localPlayer.m_pos;
 
-			float distance = m_pos.distTo(localPlayer.m_pos);
+			float angleToPlayer = deltaPlayer.angle();
 
-			float ang = relativePos.angle() - localPlayer.m_lookDir.angle();
-			// TODO: sprite render
+			const float angPerPixel = 640/0.8f;
 
+			const float angleFromLeftOfScreen = localPlayer.m_lookDir.angle() + (0.4f) - angleToPlayer;
+			
 			Vec2 screenPos;
-			screenPos.m_x = tanf(ang) * viewDist;
+
+			screenPos.m_x = 640 - (angleFromLeftOfScreen * angPerPixel);
 			screenPos.m_y = 150;
 
-			Textures::dev->drawImage(screenPos.m_x, screenPos.m_y);
-			/*glColor3f(m_r, m_g, m_b);
+			int spriteSize = (1.f / m_pos.distTo(localPlayer.m_pos)) * 6000.f;
+
+			//Textures::barrel->drawScaledImage(screenPos.m_x - (spriteSize / 2), screenPos.m_y - (spriteSize/2), 4, spriteSize);
+
+			// if sprite is in front of wall
+			//auto depthForAngle = depthBuffer.lower_bound(angleFromLeftOfScreen);
+			// if ()
+			glColor3f(m_r, m_g, m_b);
 			glPointSize(5);
 			glBegin(GL_POINTS);
-			glVertex2f(relativePos.m_x, relativePos.m_y);
-			glEnd();*/
+			glVertex2f(screenPos.m_x, screenPos.m_y);
+			glEnd();
 		}
 
 		float m_r=1, m_g=1, m_b=1;
 	};
 
-	inline std::vector<std::shared_ptr<BaseSprite>> sprites = 
+	struct TexturedSprite : BaseSprite
 	{
-		std::make_shared<PointSprite>(PointSprite(Vec2(5, 5), 0.8f, 0.25f, 1.f))
+		TexturedSprite(Vec2 pos, std::shared_ptr<Textures::BaseTexture> texture)
+		{
+			m_texture = texture;
+			m_pos = pos;
+		}
+
+		void render() override
+		{	//		 vv good explanation on getting sprite world to screen coordinates vv
+			// https://wynnliam.github.io/raycaster/news/tutorial/2019/04/03/raycaster-part-02.html
+
+			Vec2 deltaPlayer = m_pos - localPlayer.m_pos;
+
+			float angleToPlayer = deltaPlayer.angle();
+
+			const float angPerPixel = 640 / 0.8f;
+
+			const float angleFromLeftOfScreen = localPlayer.m_lookDir.angle() + (0.4f) - angleToPlayer;
+
+			Vec2 screenPos;
+
+			screenPos.m_x = 640 - (angleFromLeftOfScreen * angPerPixel);
+			screenPos.m_y = 150;
+
+			int spriteSize = (1.f / m_pos.distTo(localPlayer.m_pos)) * 6000.f;
+
+			if (m_texture)
+			m_texture->drawScaledImage(screenPos.m_x - (spriteSize / 2), screenPos.m_y - (spriteSize/2), 4, spriteSize);
+		}
+
+		std::shared_ptr<Textures::BaseTexture> m_texture = {};
 	};
+
+	inline std::vector<std::shared_ptr<BaseSprite>> sprites = {};
+
+	inline void addSprites()
+	{
+		sprites.push_back(std::make_shared<TexturedSprite>(TexturedSprite(Vec2(5, 5), Textures::barrel)));
+		sprites.push_back(std::make_shared<TexturedSprite>(TexturedSprite(Vec2(10, 5), Textures::barrel)));
+
+		sprites.push_back(std::make_shared<TexturedSprite>(TexturedSprite(Vec2(15, 5), Textures::zombie)));
+	}
 
 	inline void renderSprites()
 	{
