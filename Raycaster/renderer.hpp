@@ -97,12 +97,12 @@ namespace Renderer
 			TraceResult result = {};
 			while (curSpace)
 			{
+				result.roomsPassedThrough.push_back(curSpace);
+
 				intersectionPos = findRayIntersectionWithRectangle(curSpace->m_position);
 
 				hitSpace = curSpace;
 				curSpace = curSpace->getConjoinedRoomAtPoint(intersectionPos.pos + m_direction / 50);
-
-				result.roomsPassedThrough.push_back(curSpace);
 			}
 
 			result.hitPos = intersectionPos.pos;

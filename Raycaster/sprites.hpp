@@ -51,10 +51,11 @@ namespace Sprites
 
 	struct TexturedSprite : BaseSprite
 	{
-		TexturedSprite(Vec2 pos, std::shared_ptr<Textures::BaseTexture> texture)
+		TexturedSprite(Vec2 pos, std::shared_ptr<Textures::BaseTexture> texture, std::shared_ptr<Map::Room> room)
 		{
-			m_texture = texture;
 			m_pos = pos;
+			m_texture = texture;
+			m_room = room;
 		}
 
 		void render() override
@@ -76,21 +77,47 @@ namespace Sprites
 
 			int spriteSize = (1.f / m_pos.distTo(localPlayer.m_pos)) * 6000.f;
 
-			if (m_texture)
-				m_texture->drawScaledImage(screenPos.m_x - (spriteSize / 2), screenPos.m_y - (spriteSize/2), 4, spriteSize);
+			if (!m_texture) return;
+
+			const float leftSideOfSprite = screenPos.m_x - (spriteSize / 2);
+			const float topOfSprite = screenPos.m_y - (spriteSize / 2);
+			const float distance = deltaPlayer.length();
+			// Draw columns of sprite if visible
+			for (int i = 0; i < spriteSize; i += 4 /* column width */)
+			{
+				const int columnOnScreen = (leftSideOfSprite + i) / 4 /* column width */;
+
+				if (columnOnScreen > depthBuffer.size() - 1 || columnOnScreen < 0) continue;
+
+				bool passesThroughRoom = false;
+				for (const auto& room : depthBuffer[columnOnScreen].roomsPassedThrough)
+				{
+					if (m_room.get() == room.get()) passesThroughRoom = true;
+				}
+
+				// If the item doesn't pass through the room the sprite is in, then the sprite is not rendered
+				if (!passesThroughRoom) continue;
+
+				if (distance > depthBuffer[columnOnScreen].distanceToWall) continue;
+				
+				// draw column
+				m_texture->drawColumn(leftSideOfSprite + i, topOfSprite, (float)i * ((float)m_texture->m_width / (float)spriteSize), 4 /* column width */, spriteSize);
+			}
 		}
 
 		std::shared_ptr<Textures::BaseTexture> m_texture = {};
+		std::shared_ptr<Map::Room> m_room = {};
 	};
 
 	inline std::vector<std::shared_ptr<BaseSprite>> sprites = {};
 
 	inline void addSprites()
 	{
-		sprites.push_back(std::make_shared<TexturedSprite>(TexturedSprite(Vec2(5, 5), Textures::barrel)));
-		sprites.push_back(std::make_shared<TexturedSprite>(TexturedSprite(Vec2(10, 5), Textures::barrel)));
+		//sprites.push_back(std::make_shared<TexturedSprite>(TexturedSprite(Vec2(5, 5), Textures::barrel)));
+		//sprites.push_back(std::make_shared<TexturedSprite>(TexturedSprite(Vec2(10, 5), Textures::barrel)));
 
-		sprites.push_back(std::make_shared<TexturedSprite>(TexturedSprite(Vec2(15, 5), Textures::zombie)));
+		//sprites.push_back(std::make_shared<TexturedSprite>(TexturedSprite(Vec2(15, 5), Textures::zombie)));
+		sprites.push_back(std::make_shared<TexturedSprite>(TexturedSprite(Vec2(5, 5), Textures::dev, Map::map)));
 	}
 
 	inline void renderSprites()

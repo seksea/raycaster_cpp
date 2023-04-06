@@ -15,7 +15,7 @@ struct DepthBufferItem
 	std::vector<std::shared_ptr<Map::Room>> roomsPassedThrough = {};
 };
 
-inline std::map<float, DepthBufferItem> depthBuffer;
+inline std::vector<DepthBufferItem> depthBuffer;
 
 class Player
 {
@@ -41,7 +41,7 @@ public:
 			m_curRoom = newSpace;
 		else
 			m_pos = oldPos;
-		
+
 		constexpr float width = 640;
 		constexpr float columnWidth = 4;
 		constexpr float FOVRad = 0.8f; // ~90 degrees FOV
@@ -70,22 +70,23 @@ public:
 				glEnd();
 			}
 			else {
-				depthBuffer.insert({ ang.angle(), DepthBufferItem(distance, result.roomsPassedThrough) });
+				depthBuffer.push_back(DepthBufferItem(distance, result.roomsPassedThrough));
 				
 				result.texture->drawColumn(i, 150 - (1 / distance) * 3000, abs(((int)(result.hitPos.m_x * 4) + (int)(result.hitPos.m_y * 4))) % 64, columnWidth, (1 / distance) * 6000, result.side == 0 || result.side == 1 ? 0.75f : 1.f);
 			}
 		}
-
-		/*float count = 0;
-		for (auto& depthBufferItem : depthBuffer)
+		/* Visualise the depth buffer
+		float count = 0;
+		for (const auto& depthBufferItem : depthBuffer)
 		{
 			glColor3f(0.8f, 0.2f, 0.5f);
 			glPointSize(5);
 			glBegin(GL_POINTS);
-			glVertex2f(count, depthBufferItem.second.distanceToWall);
+			glVertex2f(count, depthBufferItem.distanceToWall);
 			glEnd();
 			count += 4;
-		}*/
+		}
+		*/
 
 	}
 
