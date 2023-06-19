@@ -1,6 +1,6 @@
 # Non-Euclidean Raycaster
 
-[![Screenshot](https://github.com/seksea/raycaster_cpp/blob/main/resources/raycaster.png)](https://github.com/seksea/raycaster_cpp/blob/main/resources/raycaster.mp4)
+[![Screenshot](https://github.com/seksea/raycaster_cpp/blob/master/resources/raycaster.png)](https://github.com/seksea/raycaster_cpp/blob/master/resources/raycaster.mp4)
 
 This raycasting engine was originally developed as my A-Level NEA coursework. It offers a unique approach to raycasting, allowing it to render rooms with a "non-euclidean" layout.
 
@@ -28,7 +28,7 @@ Contributions to this project are welcome! If you have any ideas, suggestions, o
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE). Feel free to use, modify, and distribute the code for personal or commercial purposes.
+This project is licensed under the [MIT License](https://github.com/seksea/raycaster_cpp/blob/master/LICENSE). Feel free to use, modify, and distribute the code for personal or commercial purposes.
 
 ## Contact
 
