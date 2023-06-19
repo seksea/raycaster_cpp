@@ -4,6 +4,8 @@
 
 This raycasting engine was originally developed as my A-Level NEA coursework. It offers a unique approach to raycasting, allowing it to render rooms with a "non-euclidean" layout.
 
+Get a release build of the game [here](https://github.com/seksea/raycaster_cpp/releases/tag/windows-release)
+
 ## Features
 
 - Raycasting: The engine employs raycasting techniques to create a 3D rendering of the environment.
