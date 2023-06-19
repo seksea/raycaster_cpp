@@ -22,6 +22,14 @@ To get started with the Non-Euclidean Raycaster, follow these steps:
 4. Run the executable file to launch the raycaster.
 5. Explore the non-euclidean rooms, interact with sprites, and enjoy the experience!
 
+## Controls
+| Key   | Function               |
+|-------|------------------------|
+| W/S   | Move forward/backwards |
+| A/D   | Look left/right        |
+| Shift | Run                    |
+| Escape| Toggle map-view        |
+
 ## Contributing
 
 Contributions to this project are welcome! If you have any ideas, suggestions, or bug fixes, please feel free to submit a pull request. Together, we can enhance this raycasting engine and make it even more impressive.
