@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include <GL/glut.h>
+#include <glut.h>
 
 typedef unsigned char stbi_uc;
 
